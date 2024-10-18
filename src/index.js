@@ -1,3 +1,4 @@
+import * as actions from "./actionTypes";
 import store from "./store";
 
 // Subscribe to store to get changes when store changes
@@ -7,7 +8,7 @@ const unsubscribe = store.subscribe(() => {
 
 // Dispatching actions
 store.dispatch({
-  type: "bugAdded",
+  type: actions.BUG_ADDED,
   payload: {
     description: "Bug1",
   },
@@ -18,10 +19,8 @@ unsubscribe();
 
 // Dispatch remove bug
 store.dispatch({
-  type: "bugRemoved",
+  type: actions.BUG_REMOVED,
   payload: {
     id: 1,
   },
 });
-
-console.log(store.getState());
