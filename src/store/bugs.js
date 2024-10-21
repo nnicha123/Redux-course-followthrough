@@ -25,7 +25,7 @@ const slice = createSlice({
       bugs.loading = false;
     },
     bugAssignedToUser: (bugs, action) => {
-      const { bugId, userId } = action.payload;
+      const { id: bugId, userId } = action.payload;
       const index = bugs.list.findIndex((bug) => bug.id === bugId);
       bugs.list[index].userId = userId;
     },
@@ -43,7 +43,8 @@ const slice = createSlice({
 });
 
 export default slice.reducer;
-export const {
+
+const {
   bugAdded,
   bugRemoved,
   bugResolved,
@@ -89,6 +90,14 @@ export const resolveBug = (id) =>
     method: "patch",
     data: { resolved: true },
     onSuccess: bugResolved.type,
+  });
+
+export const assignBugToUser = (bugId, userId) =>
+  apiCallBegan({
+    url: url + "/" + bugId,
+    method: "patch",
+    data: { userId },
+    onSuccess: bugAssignedToUser.type,
   });
 
 // Create memoized selector from createselector
