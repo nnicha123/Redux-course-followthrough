@@ -1,3 +1,4 @@
+import api from "./middleware/api";
 import displayToast from "./middleware/displayToast";
 import logger from "./middleware/logger";
 import reducer from "./reducer";
@@ -12,6 +13,7 @@ export default function () {
       ...getDefaultMiddleware(),
       logger({ destination: "console" }),
       displayToast,
+      api,
     ],
   });
 }
