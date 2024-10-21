@@ -1,5 +1,5 @@
 import configureStore from "./store/configureStore";
-import * as actions from "./store/api";
+import { loadBugs } from "./store/bugs";
 
 const store = configureStore();
 
@@ -12,10 +12,4 @@ store.dispatch({
   payload: { message: "An error occured" },
 });
 
-store.dispatch(
-  actions.apiCallBegan({
-    url: "bugs",
-    onSuccess: "bugsReceived",
-    // onError: actions.apiCallFailed.type,
-  })
-);
+store.dispatch(loadBugs());
