@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { apiCallBegan } from "./api";
 import { createSelector } from "reselect";
+import moment from "moment";
 
 // reducer
 let lastId = 0;
@@ -19,6 +20,7 @@ const slice = createSlice({
     bugsReceived: (bugs, action) => {
       bugs.list = action.payload;
       bugs.loading = false;
+      bugs.lastFetch = Date.now();
     },
     bugsRequestFailed: (bugs, action) => {
       bugs.loading = false;
@@ -59,13 +61,24 @@ export const {
 // Action creators
 const url = "/bugs";
 
-export const loadBugs = () =>
-  apiCallBegan({
-    url,
-    onStart: bugsRequested.type,
-    onSuccess: bugsReceived.type,
-    onError: bugsRequestFailed.type,
-  });
+export const loadBugs = () => (dispatch, getState) => {
+  const { lastFetch } = getState().entities.bugs;
+  console.log(lastFetch);
+
+  // Calculate the difference in time fetches
+  const diffInMinutes = moment().diff(moment(lastFetch), "minutes");
+  // if called less than 10 minutes ago will not dispatch it again - Implement caching
+  if (diffInMinutes < 10) return;
+
+  dispatch(
+    apiCallBegan({
+      url,
+      onStart: bugsRequested.type,
+      onSuccess: bugsReceived.type,
+      onError: bugsRequestFailed.type,
+    })
+  );
+};
 
 // Create memoized selector from createselector
 // USing this selector if list of bug hasn't changed, the logic will not be executed again, it will return the result from the cache
