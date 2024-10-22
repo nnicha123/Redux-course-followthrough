@@ -3,6 +3,7 @@ import { apiCallBegan } from "./api";
 import { createSelector } from "reselect";
 import moment from "moment";
 import { method } from "lodash";
+import axios from "axios";
 
 // reducer
 const slice = createSlice({
@@ -75,6 +76,16 @@ export const loadBugs = () => (dispatch, getState) => {
     })
   );
 };
+
+// export const addBug = (bug) => async (dispatch) => {
+//   const response = await axios.request({
+//     baseURL: "http://localhost:9001/api",
+//     url: "/bugs",
+//     method: "post",
+//     data: bug,
+//   });
+//   dispatch(bugAdded(bug));
+// };
 
 export const addBug = (bug) =>
   apiCallBegan({
