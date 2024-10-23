@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">73.8% </span>
+                <span class="strong">95.23% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>31/42</span>
+                <span class='fraction'>40/42</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">60.86% </span>
+                <span class="strong">91.3% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>14/23</span>
+                <span class='fraction'>21/23</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">77.14% </span>
+                <span class="strong">97.14% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>27/35</span>
+                <span class='fraction'>34/35</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line medium'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -219,12 +219,12 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
@@ -281,7 +281,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -297,7 +297,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -315,9 +315,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { createSlice } from "@reduxjs/toolkit";
 import { apiCallBegan } from "./api";
@@ -346,10 +346,10 @@ const slice = createSlice({
     bugsRequestFailed: (bugs, action) =&gt; {
       bugs.loading = false;
     },
-    bugAssignedToUser: <span class="fstat-no" title="function not covered" >(b</span>ugs, action) =&gt; {
-      const { id: bugId, userId } = <span class="cstat-no" title="statement not covered" >action.payload;</span>
-      const index = <span class="cstat-no" title="statement not covered" >bugs.list.findIndex(<span class="fstat-no" title="function not covered" >(b</span>ug) =&gt; <span class="cstat-no" title="statement not covered" >bug.id === bugId)</span>;</span>
-<span class="cstat-no" title="statement not covered" >      bugs.list[index].userId = userId;</span>
+    bugAssignedToUser: (bugs, action) =&gt; {
+      const { id: bugId, userId } = action.payload;
+      const index = bugs.list.findIndex((bug) =&gt; bug.id === bugId);
+      bugs.list[index].userId = userId;
     },
     bugAdded: (bugs, action) =&gt; {
       bugs.list.push(action.payload);
@@ -424,8 +424,8 @@ export const resolveBug = (id) =&gt;
     onSuccess: bugResolved.type,
   });
 &nbsp;
-export const assignBugToUser = <span class="fstat-no" title="function not covered" >(b</span>ugId, userId) =&gt;
-<span class="cstat-no" title="statement not covered" >  apiCallBegan({</span>
+export const assignBugToUser = (bugId, userId) =&gt;
+  apiCallBegan({
     url: url + "/" + bugId,
     method: "patch",
     data: { userId },
@@ -442,10 +442,10 @@ export const getUnresolvedBugs = createSelector(
   (bugs, projects) =&gt; bugs.list.filter((bug) =&gt; !bug.resolved)
 );
 &nbsp;
-export const getBugsByUser = <span class="fstat-no" title="function not covered" >(u</span>serId) =&gt;
-<span class="cstat-no" title="statement not covered" >  createSelector(</span>
-<span class="fstat-no" title="function not covered" >    (s</span>tate) =&gt; <span class="cstat-no" title="statement not covered" >state.entities.bugs,</span>
-<span class="fstat-no" title="function not covered" >    (b</span>ugs) =&gt; <span class="cstat-no" title="statement not covered" >bugs.filter(<span class="fstat-no" title="function not covered" >(b</span>ug) =&gt; <span class="cstat-no" title="statement not covered" >bug.userId === userId)</span></span>
+export const getBugsByUser = (userId) =&gt;
+  createSelector(
+    (state) =&gt; state.entities.bugs,
+    (bugs) =&gt; bugs.list.filter((bug) =&gt; bug.userId === userId)
   );
 &nbsp;</pre></td></tr></table></pre>
 
@@ -454,7 +454,7 @@ export const getBugsByUser = <span class="fstat-no" title="function not covered"
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2024-10-22T09:10:10.077Z
+                at 2024-10-23T02:47:22.226Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

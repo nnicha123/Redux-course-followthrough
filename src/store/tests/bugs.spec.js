@@ -1,8 +1,14 @@
-import { addBug, getUnresolvedBugs, loadBugs, resolveBug } from "../bugs";
+import {
+  addBug,
+  assignBugToUser,
+  getBugsByUser,
+  getUnresolvedBugs,
+  loadBugs,
+  resolveBug,
+} from "../bugs";
 import configureStore from "../configureStore";
 import MockAdapter from "axios-mock-adapter";
 import axios from "axios";
-import entities from "../entities";
 
 describe("bugsSlice", () => {
   let fakeAxios;
@@ -62,6 +68,28 @@ describe("bugsSlice", () => {
     expect(bugsSlice().list[0].resolved).not.toBe(true);
   });
 
+  it("should assign bug to user if it is saved to the server", async () => {
+    fakeAxios
+      .onPatch("/bugs/1", { userId: 1 })
+      .reply(200, { id: 1, userId: 1 });
+    fakeAxios.onPost("/bugs").reply(200, { id: 1 });
+
+    await store.dispatch(addBug({}));
+    await store.dispatch(assignBugToUser(1, 1));
+
+    expect(bugsSlice().list[0].userId).toBe(1);
+  });
+
+  it("should not assign bug to user if it is not saved to the server", async () => {
+    fakeAxios.onPatch("/bugs/1", { userId: 1 }).reply(500);
+    fakeAxios.onPost("/bugs").reply(200, { id: 1 });
+
+    await store.dispatch(addBug({}));
+    await store.dispatch(assignBugToUser(1, 1));
+
+    expect(bugsSlice().list[0].userId).not.toBe(1);
+  });
+
   describe("loading bugs", () => {
     describe("if the bugs exist in the cache", () => {
       it("they should not be fetched from the server again", async () => {
@@ -110,7 +138,7 @@ describe("bugsSlice", () => {
   });
 
   describe("selectors", () => {
-    it("should return unresolved bugs", async () => {
+    it("should return unresolved bugs", () => {
       const state = createState();
       state.entities.bugs.list = [
         { id: 1, resolved: true },
@@ -119,6 +147,19 @@ describe("bugsSlice", () => {
       ];
 
       const result = getUnresolvedBugs(state);
+
+      expect(result).toHaveLength(2);
+    });
+    it("should return the correct bug or user", () => {
+      const state = createState();
+      state.entities.bugs.list = [
+        { id: 1, userId: 1 },
+        { id: 2, userId: 2 },
+        { id: 3, userId: 1 },
+      ];
+
+      const selectBugsByUser = getBugsByUser(1);
+      const result = selectBugsByUser(state);
 
       expect(result).toHaveLength(2);
     });
