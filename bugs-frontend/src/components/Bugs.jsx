@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 
 // Subscribing and unsubscribing happens under the hood, do not need to sub/unsubscribe manually
 class Bugs extends Component {
+  // Only exists in class components not function components
   componentDidMount() {
     this.props.loadBugs();
   }
