@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getUnresolvedBugs, loadBugs } from "../store/bugs";
+import { getUnresolvedBugs, loadBugs, resolveBug } from "../store/bugs";
 
 // In function components we use hooks - only available in function components
 const BugsList = () => {
@@ -16,7 +16,10 @@ const BugsList = () => {
   return (
     <ul>
       {bugs.map((bug) => (
-        <li key={bug.id}>{bug.description}</li>
+        <li key={bug.id}>
+          {bug.description}
+          <button onClick={() => dispatch(resolveBug(bug.id))}>Resolve</button>
+        </li>
       ))}
     </ul>
   );
