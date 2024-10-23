@@ -1,16 +1,39 @@
-import { Component } from "react"
-import StoreContext from "../contexts/storeContext"
+import { Component } from "react";
+import StoreContext from "../contexts/storeContext";
+import { loadBugs } from "../store/bugs";
 
 class Bugs extends Component {
-    static contextType = StoreContext;
+  static contextType = StoreContext;
 
-    componentDidMount(){
-        console.log(this.context)
-    }
+  state = { bugs: [] };
 
-    render(){
-        return <div>Bugs</div>
-    }
+  componentDidMount() {
+    const store = this.context;
+
+    this.unsubscribe = store.subscribe(() => {
+      const bugsInStore = store.getState().entities.bugs.list;
+      if (this.state.bugs !== bugsInStore) {
+        this.setState({ bugs: bugsInStore });
+      }
+    });
+
+    store.dispatch(loadBugs());
+  }
+
+  componentWillUnmount() {
+    // Unsubscribe to make sure no memory leaks
+    this.unsubscribe();
+  }
+
+  render() {
+    return (
+      <ul>
+        {this.state.bugs.map((bug) => (
+          <li key={bug.id}>{bug.description}</li>
+        ))}
+      </ul>
+    );
+  }
 }
 
-export default Bugs
+export default Bugs;
